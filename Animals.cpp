@@ -1,4 +1,4 @@
-// Animals.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// Animals.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include <iostream>
@@ -12,6 +12,42 @@ public:
     string classname;
 
     static int count;
+
+    enum class direction {
+        left,
+        right,
+        forward,
+        back,
+    };
+    
+    int convert_to_int(std::string st)
+    {       
+        if (st == "left")
+            return static_cast<int>(direction::left);
+        else if (st == "right")
+            return static_cast<int>(direction::right);
+        else if (st == "forward")
+            return static_cast<int>(direction::forward);
+        else if (st == "back")
+            return static_cast<int>(direction::back);
+
+        return -1;
+     
+    }
+
+    string convert_to_string(direction dir)
+    {
+        if (dir == direction::left)
+            return "left";
+        else if (dir == direction::right)
+            return "right";
+        else if (dir == direction::forward)
+            return "forward";
+        else if (dir == direction::back)
+            return "back";
+
+        return "Unknown";
+    }
 
     Animal()
     {
@@ -109,6 +145,11 @@ int main()
 {
     Lion* lion1 = Lion::create_lion(500);
     Lion* lion2 = Lion::create_lion(800);
+
+    int dir = lion1->convert_to_int("right");
+    string str = lion1->convert_to_string(Animal::direction::right);
+
+    std::cout << dir << "  " << str << endl;
 
     if (lion1 && lion2)
     {
