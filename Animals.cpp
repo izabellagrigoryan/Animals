@@ -20,18 +20,18 @@ public:
         back,
     };
     
-    int convert_to_int(std::string st)
+    direction convert_to_int(std::string st)
     {       
         if (st == "left")
-            return static_cast<int>(direction::left);
+            return direction::left;
         else if (st == "right")
-            return static_cast<int>(direction::right);
+            return direction::right;
         else if (st == "forward")
-            return static_cast<int>(direction::forward);
+            return direction::forward;
         else if (st == "back")
-            return static_cast<int>(direction::back);
+            return direction::back;
 
-        return -1;
+        return direction::left;
      
     }
 
@@ -146,11 +146,9 @@ int main()
     Lion* lion1 = Lion::create_lion(500);
     Lion* lion2 = Lion::create_lion(800);
 
-    int dir = lion1->convert_to_int("right");
+    Animal::direction dir = lion1->convert_to_int("right");
     string str = lion1->convert_to_string(Animal::direction::right);
-
-    std::cout << dir << "  " << str << endl;
-
+   
     if (lion1 && lion2)
     {
         if (lion1 < lion2)
