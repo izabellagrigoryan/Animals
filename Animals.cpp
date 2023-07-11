@@ -53,7 +53,7 @@ public:
     {
         this->classname = typeid(*this).name() + string("  ");
     }
-    
+
     virtual ~Animal() {}
 };
 
@@ -70,7 +70,7 @@ public:
 
 class Lion : public Mammal
 {
-private:
+public:
 
     Lion(int weight)
     {
@@ -80,17 +80,29 @@ private:
         Animal::count++;
     }
 
-public:
-
-    static Lion* create_lion(int weight)
+    Lion(Lion&& animal)
     {
-         if (Animal::count < 1)
-         {
-             Lion* ptr = new Lion(weight);
-             return ptr;
-         }
-         std::cout << "You can't create more than one lion" << std::endl;
-         return NULL;
+        if (this != &animal)
+        {
+            this->weight = animal.weight;
+            this->classname = animal.classname;
+            animal.weight = 0;
+            animal.classname = "";
+            std::cout << "This is move constructor" << std::endl;
+        }
+    }
+
+    Lion& operator=(Lion&& animal) noexcept
+    {
+        if (this != &animal)
+        {
+            this->weight = animal.weight;
+            this->classname = animal.classname;
+            animal.weight = 0;
+            animal.classname = "";
+            std::cout << "This is move assignment" << std::endl;
+        }
+        return *this;
     }
 
     bool operator<(const Animal& animal)
@@ -116,21 +128,7 @@ public:
         else
             return false;
     }
-
-    Lion& operator++()
-    {
-        Animal::count++;
-        
-        return *this;
-    }
-
-    Lion operator++(int)
-    {
-        Lion temp = *this;
-        ++*this;
-        return temp;
-    }
-
+    
     Animal& operator()()
     {
         cout << this->classname << endl;
@@ -143,31 +141,31 @@ int Animal::count = 0;
 
 int main()
 {
-    Lion* lion1 = Lion::create_lion(500);
-    Lion* lion2 = Lion::create_lion(800);
+    Lion lion1(500);
+    Lion lion2(800);
 
-    Animal::direction dir = lion1->convert_to_int("right");
-    string str = lion1->convert_to_string(Animal::direction::right);
-   
-    if (lion1 && lion2)
-    {
-        if (lion1 < lion2)
-            std::cout << "The weight of the Lion1 less than the weight of the Lion2" << std::endl;
+    if (lion1 < lion2)
+        std::cout << "The weight of the Lion1 less than the weight of the Lion2" << std::endl;
 
-        if (lion1 > lion2)
-            std::cout << "The weight of the Lion1 more than the weight of the Lion2" << std::endl;
+    if (lion1 > lion2)
+        std::cout << "The weight of the Lion1 more than the weight of the Lion2" << std::endl;
 
-        if (lion1 == lion2)
-            std::cout << "The weight of the Lion1 is equal to the weight of the Lion2" << std::endl;
-
-        //lion1();
-    }
+    if (lion1 == lion2)
+        std::cout << "The weight of the Lion1 is equal to the weight of the Lion2" << std::endl;
+    
+    lion1();
+    
     std::cout << "Count of the created Lions = " << Animal::count << std::endl << std::endl;
     
-    Lion c1 = ++*lion1;
-    Lion c2 = (*lion1)++;
+    Animal::direction dir = lion1.convert_to_int("right");
+    string str = lion1.convert_to_string(Animal::direction::right);
 
-    std::cout << Animal::count << endl;
+    Lion lion3 = Lion(1000);
+    std::cout << lion3.weight << std::endl;
+    Lion lion4(std::move(lion3));
+
+    lion3 = std::move(lion2);
+    std::cout << lion3.weight << "  " << lion2.weight << std::endl;
 
     return 0;
 }
